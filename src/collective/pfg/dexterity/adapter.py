@@ -244,7 +244,10 @@ class DexterityContentAdapter(FormActionAdapter):
 
     @as_owner
     def _setAsOwner(self, context, field, value):
-        # Try to set the value on creted object
+        # workaround for field being None (ajung)
+        if field is None:
+            return
+        # Try to set the value on created object
         try:
             # 1) Try to set it directly
             bound_field = field.bind(context)
@@ -263,7 +266,7 @@ class DexterityContentAdapter(FormActionAdapter):
                 raise
             except Exception:
                 LOG.error(e)
-                return u"An unexpected error: %s" % e
+                return u"An unexpected error: %s (%r)" % (e, field)
 
     @as_owner
     def _doActionAsOwner(self, wftool, context, transition):
